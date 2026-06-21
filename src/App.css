@@ -1,0 +1,290 @@
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.app-header {
+  margin-bottom: 2rem;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.app-header p {
+  margin: 0;
+  color: #9aa0a6;
+  max-width: 720px;
+}
+
+.input-panel,
+.summary-panel {
+  background: #1a1d27;
+  border: 1px solid #2d3142;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.upload-section,
+.script-input {
+  margin-bottom: 1.25rem;
+}
+
+.upload-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-name {
+  color: #9aa0a6;
+  font-size: 0.9rem;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.script-textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: #0f1117;
+  border: 1px solid #2d3142;
+  border-radius: 8px;
+  color: #e8eaed;
+  resize: vertical;
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.threshold-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.threshold-label input {
+  width: 4rem;
+  padding: 0.35rem 0.5rem;
+  background: #0f1117;
+  border: 1px solid #2d3142;
+  border-radius: 6px;
+  color: #e8eaed;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.btn-primary {
+  background: #4f8cff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #3a7aef;
+}
+
+.btn-secondary {
+  background: #2d3142;
+  color: #e8eaed;
+}
+
+.btn-secondary:hover {
+  background: #3d4258;
+}
+
+.error-banner {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #3d1f1f;
+  border: 1px solid #7a3030;
+  border-radius: 8px;
+  color: #ffb4b4;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.summary-card {
+  background: #0f1117;
+  border: 1px solid #2d3142;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.summary-value {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #4f8cff;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: #9aa0a6;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.4rem 0.9rem;
+  background: #2d3142;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #e8eaed;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.filter-btn.active {
+  background: #4f8cff;
+  color: #fff;
+}
+
+.export-btn {
+  margin-left: auto;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #2d3142;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.preview-table th,
+.preview-table td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #2d3142;
+  text-align: left;
+  vertical-align: top;
+}
+
+.preview-table th {
+  background: #1a1d27;
+  font-weight: 600;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.preview-table tbody tr:hover {
+  background: #1a1d27;
+}
+
+.preview-table tr.needs-review {
+  background: #2a2418;
+}
+
+.mono {
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.text-cell {
+  max-width: 220px;
+  word-break: break-word;
+}
+
+.cell-input,
+.cell-textarea {
+  width: 100%;
+  min-width: 100px;
+  padding: 0.35rem 0.5rem;
+  background: #0f1117;
+  border: 1px solid #2d3142;
+  border-radius: 4px;
+  color: #e8eaed;
+}
+
+.cell-textarea {
+  resize: vertical;
+}
+
+.confidence.high {
+  color: #6dd58c;
+}
+
+.confidence.low {
+  color: #ffb454;
+}
+
+.center {
+  text-align: center;
+}
+
+.empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: #9aa0a6;
+}
+
+.unmatched-panel {
+  background: #1a1d27;
+  border: 1px solid #2d3142;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.unmatched-panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.panel-description {
+  margin: 0 0 1rem;
+  color: #9aa0a6;
+  font-size: 0.9rem;
+}
+
+.unmatched-table tbody tr {
+  background: #1f1a14;
+}
+
+@media (max-width: 768px) {
+  .export-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,230 @@
+Build a local app called **Caption Script Matcher**.
+
+Goal:
+Create a tool that takes:
+
+1. A Premiere Pro transcript/caption export, preferably `.srt`, `.vtt`, or `.txt`
+2. The original written script as `.pdf`, `.docx`, `.txt`, or pasted text
+
+The app should compare the transcript against the original script and export a corrected `.srt` file that can be imported back into Adobe Premiere Pro.
+
+Core behavior:
+
+* Use the Premiere transcript/caption file as the source of timing.
+* Use the original script as the source of correct wording and speaker names.
+* Match each transcript segment to the closest corresponding dialogue line in the script.
+* Correct transcript errors using only matched dialogue that is already represented in the transcript.
+* Add speaker tags before each line using this exact format:
+
+`[Speaker Name]: Dialogue text`
+
+Important constraints:
+
+* Do not add any new dialogue that is not already represented in the transcript timing.
+* Do not add SFX, music cues, ambience notes, or bracketed sound descriptions.
+* Do not create captions for script lines that were not detected in the transcript.
+* Do not “fill in” missing lines from the script.
+* Only correct and speaker-tag the lines that are present in the transcript.
+* Preserve the original timing from the transcript/caption file.
+* If a transcript line cannot be confidently matched, keep the original transcript text, mark it as “Needs Review,” and still allow it to export.
+
+Suggested stack:
+
+* React + Vite frontend
+* Node.js backend/utilities
+* No login system
+* No database required
+* Everything should run locally
+
+Supported input formats:
+Transcript/caption input:
+
+* `.srt`
+* `.vtt`
+* `.txt`
+
+Original script input:
+
+* `.pdf`
+* `.docx`
+* `.txt`
+* pasted text
+
+PDF compatibility:
+
+* Use a PDF parsing library such as `pdf-parse` or another reliable local PDF text extractor.
+* Extract text from uploaded PDFs.
+* Clean common PDF artifacts like page numbers, repeated headers, repeated footers, broken line wraps, and extra spacing.
+* Preserve the original dialogue order.
+* If the PDF is image-based or text cannot be extracted, show a clear error telling the user the PDF may need OCR or a text-based export.
+
+Script parsing:
+The script parser should convert the script into structured dialogue entries:
+
+```json
+[
+  {
+    "speaker": "Harold",
+    "dialogue": "I never thought I'd return here.",
+    "sourceIndex": 0
+  }
+]
+```
+
+Recognize dialogue formats such as:
+
+`HAROLD: I never thought I'd return here.`
+
+`HAROLD`
+`I never thought I'd return here.`
+
+Ignore non-dialogue lines such as scene headings, action lines, descriptions, SFX, music cues, ambience notes, parentheticals unless part of spoken dialogue, page numbers, and headers/footers.
+
+Speaker-aware matching:
+
+* Do not infer speakers from the transcript alone.
+* Match transcript text to the closest script dialogue line.
+* Pull the speaker name from the matched script line.
+* Use the matched script line’s speaker as the source of truth.
+* Format exported captions as:
+
+`[Speaker Name]: Corrected dialogue`
+
+Matching logic:
+
+* Parse transcript into caption blocks with index, start time, end time, and original text.
+* Parse script into ordered speaker/dialogue entries.
+* Use fuzzy matching to compare transcript text against script dialogue text.
+* Strongly prefer matches that appear in the same rough order as the transcript.
+* Avoid matching the same script line to multiple transcript segments unless absolutely necessary.
+* Use a rolling search window so captions match forward through the script instead of jumping randomly.
+* Add a confidence score from 0–100.
+* Mark matches below a configurable threshold as “Needs Review.”
+* Allow the user to manually correct any row before export.
+
+Review functionality:
+
+* Flag any caption where the corrected dialogue differs from the original transcript text beyond simply adding the speaker tag.
+* Add a “Changed” column to the preview table.
+* Do not mark a line as changed if the only difference is the added `[Speaker Name]: ` tag.
+* Normalize text before comparing:
+
+  * remove speaker tag
+  * lowercase
+  * trim whitespace
+  * collapse repeated spaces
+* Show a separate “Unmatched Script Lines” section listing script dialogue lines that were not matched to any transcript caption.
+* The unmatched section should include:
+
+  * speaker name
+  * script dialogue
+  * script order/index
+  * status: “Not present in transcript”
+* This section is only for review.
+* Do not add unmatched script lines to the exported SRT.
+* Do not change timing based on unmatched script lines.
+* Do not create extra captions from unmatched script lines.
+
+UI requirements:
+
+* User can upload a transcript/caption file.
+* User can upload or paste the original script.
+* Include a button: “Generate Corrected SRT”
+* Show a preview table with:
+
+  * caption number
+  * start time
+  * end time
+  * original transcript text
+  * matched script dialogue
+  * speaker name
+  * final caption text
+  * match confidence
+  * changed status
+  * needs review checkbox
+* Allow manual edits to speaker name, final caption text, and needs review status.
+* Add filters/toggles for:
+
+  * all captions
+  * changed captions only
+  * needs review only
+* Include a count summary:
+
+  * total captions
+  * changed captions
+  * needs review captions
+  * unmatched script lines
+* Include a button: “Export SRT”
+
+Export requirements:
+
+* Export a valid Premiere-compatible `.srt` file.
+* Preserve original transcript timestamps.
+* Preserve original caption order.
+* Do not export script-only lines.
+* Do not export SFX-only captions.
+* Do not add captions beyond what exists in the transcript.
+* Use standard SRT timestamp format:
+
+`00:00:01,000 --> 00:00:04,000`
+
+Output format example:
+
+```srt
+1
+00:00:01,000 --> 00:00:04,000
+[Harold]: I never thought I'd return here.
+
+2
+00:00:04,500 --> 00:00:07,000
+[King Holden]: Then why did you?
+```
+
+Project structure:
+
+* `/src`
+
+  * React UI
+  * upload components
+  * paste-script component
+  * preview/edit table
+  * unmatched-script-lines panel
+* `/src/lib`
+
+  * transcript parser
+  * script parser
+  * PDF text extractor
+  * DOCX text extractor
+  * fuzzy matcher
+  * speaker-aware matcher
+  * SRT exporter
+  * changed-line detector
+* `/samples`
+
+  * sample transcript `.srt`
+  * sample script `.txt`
+  * sample script `.pdf`
+* `README.md`
+
+  * how to install
+  * how to run locally
+  * supported file formats
+  * known limitations with scanned/image PDFs
+  * how to import exported `.srt` into Premiere Pro
+
+Acceptance criteria:
+
+* I can upload an `.srt` transcript and a `.pdf` script.
+* I can also use `.docx`, `.txt`, or pasted script text.
+* The app extracts script dialogue from the PDF.
+* The app matches transcript lines to script lines in order.
+* The app corrects transcript wording using only matched script dialogue.
+* The app pulls speaker names from the matched script line.
+* The app formats captions as `[Name]: Dialogue`.
+* The app flags lines where the dialogue was changed beyond adding a speaker tag.
+* The app shows script dialogue lines that were not present in the transcript.
+* The app does not add SFX.
+* The app does not add missing script-only lines.
+* The app preserves transcript timing.
+* The app exports a valid Premiere-compatible `.srt`.
+* I can review and manually fix low-confidence matches before exporting.
