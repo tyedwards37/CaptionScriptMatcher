@@ -87,5 +87,5 @@ export function matchCaptionsToScript(captions, scriptEntries, options = {}) {
       }));
   }
 
-  return { results, unmatchedScriptLines };
+  return { results, unmatchedScriptLines, matchedScriptIndices };
 }

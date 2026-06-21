@@ -3,11 +3,13 @@ import FileUpload from './components/FileUpload';
 import ScriptInput from './components/ScriptInput';
 import PreviewTable from './components/PreviewTable';
 import UnmatchedScriptPanel from './components/UnmatchedScriptPanel';
+import ScriptCuesPanel from './components/ScriptCuesPanel';
 import { parseTranscript } from './lib/transcriptParser';
-import { parseScriptText, cleanScriptText } from './lib/scriptParser';
+import { parseScriptText, parseScriptCues, cleanScriptText } from './lib/scriptParser';
 import { extractPdfText } from './lib/pdfExtractor';
 import { extractDocxText } from './lib/docxExtractor';
 import { matchCaptionsToScript } from './lib/speakerMatcher';
+import { getScriptCuePlacements } from './lib/scriptCuePlacer';
 import { isChanged } from './lib/changedDetector';
 import { exportSrt, downloadSrt } from './lib/srtExporter';
 import './App.css';
@@ -32,6 +34,7 @@ export default function App() {
   const [scriptFileName, setScriptFileName] = useState('');
   const [captions, setCaptions] = useState([]);
   const [unmatchedScriptLines, setUnmatchedScriptLines] = useState([]);
+  const [scriptCues, setScriptCues] = useState([]);
   const [filter, setFilter] = useState(FILTERS.ALL);
   const [threshold, setThreshold] = useState(60);
   const [error, setError] = useState('');
@@ -82,7 +85,9 @@ export default function App() {
 
     try {
       const parsedCaptions = parseTranscript(transcriptContent, transcriptFileName);
-      const scriptEntries = parseScriptText(cleanScriptText(scriptText));
+      const cleanedScript = cleanScriptText(scriptText);
+      const scriptEntries = parseScriptText(cleanedScript);
+      const parsedCues = parseScriptCues(cleanedScript);
 
       if (!parsedCaptions.length) {
         setError('No captions found in the transcript file.');
@@ -93,14 +98,19 @@ export default function App() {
         return;
       }
 
-      const { results, unmatchedScriptLines: unmatched } = matchCaptionsToScript(
-        parsedCaptions,
+      const { results, unmatchedScriptLines: unmatched, matchedScriptIndices } =
+        matchCaptionsToScript(parsedCaptions, scriptEntries, { threshold });
+
+      const cuePlacements = getScriptCuePlacements(
+        parsedCues,
         scriptEntries,
-        { threshold }
+        results,
+        matchedScriptIndices
       );
 
       setCaptions(applyChangedFlags(results));
       setUnmatchedScriptLines(unmatched);
+      setScriptCues(cuePlacements);
       setGenerated(true);
     } catch (err) {
       setError(err.message || 'Failed to generate corrected captions.');
@@ -131,8 +141,9 @@ export default function App() {
       changed: captions.filter((c) => c.changed).length,
       needsReview: captions.filter((c) => c.needsReview).length,
       unmatched: unmatchedScriptLines.length,
+      scriptCues: scriptCues.length,
     }),
-    [captions, unmatchedScriptLines]
+    [captions, unmatchedScriptLines, scriptCues]
   );
 
   const handleExport = useCallback(() => {
@@ -211,6 +222,10 @@ export default function App() {
                   <span className="summary-value">{summary.unmatched}</span>
                   <span className="summary-label">Unmatched Script Lines</span>
                 </div>
+                <div className="summary-card">
+                  <span className="summary-value">{summary.scriptCues}</span>
+                  <span className="summary-label">SFX in Action Lines</span>
+                </div>
               </div>
 
               <div className="filter-row">
@@ -244,6 +259,7 @@ export default function App() {
 
             <PreviewTable captions={filteredCaptions} onUpdateCaption={handleUpdateCaption} />
             <UnmatchedScriptPanel lines={unmatchedScriptLines} />
+            <ScriptCuesPanel cues={scriptCues} />
           </>
         )}
       </main>

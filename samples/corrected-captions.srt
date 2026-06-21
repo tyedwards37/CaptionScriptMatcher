@@ -1,0 +1,19 @@
+1
+00:00:01,000 --> 00:00:04,000
+[Harold]: I never thought I'd return here.
+
+2
+00:00:04,500 --> 00:00:07,000
+[King Holden]: Then why did you?
+
+3
+00:00:07,500 --> 00:00:11,000
+[Harold]: Because the kingdom needs its king.
+
+4
+00:00:11,500 --> 00:00:14,000
+[King Holden]: And what of the old wounds?
+
+5
+00:00:14,500 --> 00:00:17,500
+[Harold]: Some wounds never heal. Others we learn to carry.

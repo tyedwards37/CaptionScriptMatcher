@@ -260,14 +260,17 @@
   color: #9aa0a6;
 }
 
-.unmatched-panel {
+.unmatched-panel,
+.review-panel {
   background: #1a1d27;
   border: 1px solid #2d3142;
   border-radius: 12px;
   padding: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.unmatched-panel h2 {
+.unmatched-panel h2,
+.review-panel h2 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;
 }
@@ -280,6 +283,14 @@
 
 .unmatched-table tbody tr {
   background: #1f1a14;
+}
+
+.sfx-table tbody tr {
+  background: #141a1f;
+}
+
+.placement-cell {
+  min-width: 280px;
 }
 
 @media (max-width: 768px) {
